@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 20px;
+        }
+        .form-container, .preview-container {
+            width: 48%;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        /* Resume Styling */
+        .resume-preview {
+            font-size: 12px;
+        }
+        .resume-preview h2 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .resume-preview p {
+            font-size: 10px;
+            margin: 5px 0;
+        }
+        .resume-header {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .resume-contact {
+            font-size: 10px;
+            color: #555;
+        }
+        .resume-section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        .resume-details {
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+        .preview-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Resume Generator</h1>
+    <div class="container">
+        <!-- Input Form -->
+        <div class="form-container">
+            <form id="resumeForm">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" placeholder="Enter your full name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" placeholder="Enter your phone number" required>
+
+                <label for="linkedin">LinkedIn:</label>
+                <input type="text" id="linkedin" placeholder="Enter your LinkedIn URL">
+
+                <label for="portfolio">Portfolio:</label>
+                <input type="text" id="portfolio" placeholder="Enter your Portfolio URL">
+
+                <label for="address">Address:</label>
+                <textarea id="address" rows="2" placeholder="Enter your address"></textarea>
+
+                <label for="education">Education:</label>
+                <textarea id="education" rows="4" placeholder="Enter your education details"></textarea>
+
+                <label for="experience">Work Experience:</label>
+                <textarea id="experience" rows="4" placeholder="Enter your work experience"></textarea>
+
+                <label for="skills">Skills:</label>
+                <textarea id="skills" rows="4" placeholder="Enter your skills"></textarea>
+
+                <label for="certifications">Certifications:</label>
+                <textarea id="certifications" rows="2" placeholder="Enter your certifications"></textarea>
+
+                <button type="button" onclick="showResume()">Show Resume</button>
+            </form>
+        </div>
+
+        <!-- Resume Preview -->
+        <div class="preview-container" id="resumePreview">
+            <h2>Resume Preview</h2>
+            <div id="resumeContent" class="resume-preview"></div>
+            <button onclick="generatePDF()">Download as PDF</button>
+        </div>
+    </div>
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <script>
+        // Function to display the resume on the right side
+        function showResume() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const portfolio = document.getElementById('portfolio').value;
+            const address = document.getElementById('address').value;
+            const education = document.getElementById('education').value;
+            const experience = document.getElementById('experience').value;
+            const skills = document.getElementById('skills').value;
+            const certifications = document.getElementById('certifications').value;
+
+            const resumeContent = `
+                <div class="resume-section">
+                    <div class="resume-header">${name}</div>
+                    <div class="resume-contact">${phone} | ${email} | ${linkedin} | ${portfolio} | ${address}</div>
+                </div>
+                <div class="resume-section">
+                    <div class="resume-section-title">PROFESSIONAL SUMMARY</div>
+                    <p>Dynamic professional with experience in various fields...</p>
+                </div>
+                <div class="resume-section">
+                    <div class="resume-section-title">EDUCATION</div>
+                    <div class="resume-details">${education}</div>
+                </div>
+                <div class="resume-section">
+                    <div class="resume-section-title">SKILLS</div>
+                    <div class="resume-details">${skills}</div>
+                </div>
+                <div class="resume-section">
+                    <div class="resume-section-title">WORK EXPERIENCE</div>
+                    <div class="resume-details">${experience}</div>
+                </div>
+                <div class="resume-section">
+                    <div class="resume-section-title">CERTIFICATIONS</div>
+                    <div class="resume-details">${certifications}</div>
+                </div>
+            `;
+
+            document.getElementById('resumeContent').innerHTML = resumeContent;
+            document.getElementById('resumePreview').style.display = 'block';
+        }
+
+        // Function to generate PDF from resume content
+        function generatePDF() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const portfolio = document.getElementById('portfolio').value;
+            const address = document.getElementById('address').value;
+            const education = document.getElementById('education').value;
+            const experience = document.getElementById('experience').value;
+            const skills = document.getElementById('skills').value;
+            const certifications = document.getElementById('certifications').value;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(22);
+            doc.text(name, 105, 20, null, null, "center");
+
+            doc.setFontSize(12);
+            doc.text(`Phone: ${phone} | Email: ${email} | LinkedIn: ${linkedin} | Portfolio: ${portfolio}`, 20, 30);
+            doc.text(`Address: ${address}`, 20, 40);
+
+            doc.setFontSize(16);
+            doc.text("Education:", 20, 60);
+            doc.setFontSize(12);
+            doc.text(education, 20, 70, { maxWidth: 170 });
+
+            doc.setFontSize(16);
+            doc.text("Work Experience:", 20, 90);
+            doc.setFontSize(12);
+            doc.text(experience, 20, 100, { maxWidth: 170 });
+
+            doc.setFontSize(16);
+            doc.text("Skills:", 20, 120);
+            doc.setFontSize(12);
+            doc.text(skills, 20, 130, { maxWidth: 170 });
+
+            doc.setFontSize(16);
+            doc.text("Certifications:", 20, 150);
+            doc.setFontSize(12);
+            doc.text(certifications, 20, 160, { maxWidth: 170 });
+
+            doc.save("resume.pdf");
+        }
+    </script>
+</body>
+</html>
